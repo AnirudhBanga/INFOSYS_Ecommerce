@@ -1,4 +1,4 @@
 ### ER DIAGRAM
 
 
-![Screenshot](asset/ER_Daigram.png)
+![Screenshot](frontend/asset/ER_Daigram.png)
