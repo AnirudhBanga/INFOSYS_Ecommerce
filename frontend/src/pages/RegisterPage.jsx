@@ -1,56 +1,97 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import {
+useState
+}
+from "react";
+
+import {
+useNavigate,
+Link
+}
+from "react-router-dom";
 
 function RegisterPage(){
 
-const navigate = useNavigate();
+const navigate=
+useNavigate();
 
-const [form,setForm] = useState({
+const [form,setForm]=
+useState({
+
 name:"",
 email:"",
 password:"",
 gender:"",
 age:"",
 phoneNo:""
+
 });
 
 const handleChange=(e)=>{
+
 setForm({
+
 ...form,
-[e.target.name]:e.target.value
+
+[e.target.name]:
+e.target.value
+
 });
+
 };
 
 const handleSubmit=async(e)=>{
+
 e.preventDefault();
 
 try{
 
-const res = await fetch("http://localhost:8081/api/auth/register",{
+const res=
+await fetch(
+"http://localhost:8081/api/auth/register",
+{
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify(form)
-});
+
+}
+);
 
 if(res.ok){
-alert("Registration Successful");
-navigate("/login");
+
+alert(
+"Registration Successful"
+);
+
+navigate("/");
+
 }else{
-alert("Registration Failed");
+
+alert(
+"Registration Failed"
+);
+
 }
 
-}catch(err){
-console.log(err);
+}catch(error){
+
+console.log(error);
+
 alert("Server Error");
+
 }
 
 };
 
 return(
+
 <div className="container">
+
 <div className="card">
+
 <h2>Create Account</h2>
 
 <form onSubmit={handleSubmit}>
@@ -75,10 +116,23 @@ placeholder="Password"
 onChange={handleChange}
 />
 
-<select name="gender" onChange={handleChange}>
-<option>Select Gender</option>
-<option>Male</option>
-<option>Female</option>
+<select
+name="gender"
+onChange={handleChange}
+>
+
+<option value="">
+Select Gender
+</option>
+
+<option value="Male">
+Male
+</option>
+
+<option value="Female">
+Female
+</option>
+
 </select>
 
 <input
@@ -98,13 +152,21 @@ Register
 </button>
 
 <p>
+
 Already registered?
-<Link to="/"> Login</Link>
+
+<Link to="/">
+Login
+</Link>
+
 </p>
 
 </form>
+
 </div>
+
 </div>
+
 )
 
 }
