@@ -36,7 +36,10 @@ public class AuthController {
         return ResponseEntity.ok(savedUser);
     }
 
-
+    @GetMapping("/dashboard")
+public String dashboard() {
+    return "Protected API Accessed!";
+}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
