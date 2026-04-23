@@ -1,0 +1,209 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background */
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  padding: 20px;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  padding: 35px 30px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Heading */
+.card h2 {
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-size: 26px;
+}
+
+/* Form */
+.card form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Inputs + Select */
+.card input,
+.card select {
+  padding: 12px;
+  border: 1px solid #cbd5f5;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: 0.3s ease;
+  background-color: #f8fafc;
+}
+
+/* Focus Effect */
+.card input:focus,
+.card select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.4);
+}
+
+/* Input & Select Text Color Fix */
+.card input,
+.card select {
+  color: #000;              /* text color */
+  background-color: #fff;   /* ensure white background */
+}
+
+/* Placeholder color */
+.card input::placeholder {
+  color: #6b7280; /* grey */
+}
+
+/* Dropdown text */
+.card select {
+  color: #000;
+}
+
+/* Popup Background */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup Box */
+.popup-box {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 12px;
+  text-align: center;
+  animation: scaleUp 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Text */
+.popup-box h3 {
+  color: #16a34a;
+  margin-bottom: 10px;
+}
+
+.popup-box p {
+  color: #475569;
+}
+
+/* Animation */
+@keyframes scaleUp {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+/* 🔐 Password Strength */
+.weak {
+  border: 2px solid #ef4444 !important; /* red */
+}
+
+.medium {
+  border: 2px solid #f59e0b !important; /* yellow */
+}
+
+.strong {
+  border: 2px solid #22c55e !important; /* green */
+}
+
+/* 🔢 Age Error */
+.input-error {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+
+
+/* Button */
+.card button {
+  margin-top: 10px;
+  padding: 12px;
+  background: #4f46e5;
+  color: #ffffff;
+  border: none;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Button Hover */
+.card button:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+}
+
+/* Text */
+.card p {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* Link */
+.card a {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: 25px 18px;
+  }
+
+  .card h2 {
+    font-size: 22px;
+  }
+}

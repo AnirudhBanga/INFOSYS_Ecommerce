@@ -1,14 +1,8 @@
-import {
-useEffect,
-useState
-}
+import {useEffect,useState}
 from "react";
-
-import {
-useNavigate
-}
+import {useNavigate}
 from "react-router-dom";
-
+import '../style/dashboard.css';
 function Dashboard(){
 
 const navigate=useNavigate();

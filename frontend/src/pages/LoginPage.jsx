@@ -1,114 +1,118 @@
-import {useState} from "react";
+import { useState } from "react";
+import "../style/login.css";
+import { useNavigate, Link } from "react-router-dom";
 
-import {
-useNavigate,
-Link
-}
-from "react-router-dom";
+function LoginPage() {
 
-function LoginPage(){
+  const navigate = useNavigate();
 
-const navigate=useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const [email,setEmail]=useState("");
-const [password,setPassword]=useState("");
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
 
-const handleLogin=async(e)=>{
+  // ✅ Reusable popup function
+  const showMessage = (type, message) => {
+    setPopup({ show: true, type, message });
 
-e.preventDefault();
+    setTimeout(() => {
+      setPopup({ show: false, type: "", message: "" });
+    }, 2000);
+  };
 
-try{
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-const res=
-await fetch(
-"http://localhost:8081/api/auth/login",
-{
-method:"POST",
+    try {
+      const res = await fetch(
+        "http://localhost:8081/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        }
+      );
 
-headers:{
-"Content-Type":"application/json"
-},
+      if (res.ok) {
+        const data = await res.json();
 
-body:JSON.stringify({
-email,
-password
-})
-}
-);
+        localStorage.setItem("token", data.token);
 
-if(res.ok){
+        showMessage("success", "Login Successful");
 
-const data=
-await res.json();
+        // redirect after popup
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
 
-localStorage.setItem(
-"token",
-data.token
-);
+      } else {
+        showMessage("error", "Invalid Login Credentials");
+      }
 
-navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      showMessage("error", "Server Error");
+    }
+  };
 
-}else{
+  return (
 
-alert("Invalid Login");
+    <div className="container">
 
-}
+      <div className="card">
 
-}catch(error){
+        <h2>Login</h2>
 
-console.log(error);
+        <form onSubmit={handleLogin}>
 
-alert("Server Error");
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-}
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-};
+          <button type="submit">
+            Login
+          </button>
 
-return(
+          <p>
+            New User?
+            <Link to="/register"> Register</Link>
+          </p>
 
-<div className="container">
+        </form>
+      </div>
 
-<div className="card">
+      {/* ✅ Popup UI */}
+      {popup.show && (
+        <div className="popup">
+          <div className={`popup-box ${popup.type}`}>
+            <h3>
+              {popup.type === "success" ? "✅ Success" : "❌ Error"}
+            </h3>
+            <p>{popup.message}</p>
+          </div>
+        </div>
+      )}
 
-<h2>Login</h2>
-
-<form onSubmit={handleLogin}>
-
-<input
-type="email"
-placeholder="Email"
-value={email}
-onChange={(e)=>setEmail(e.target.value)}
-/>
-
-<input
-type="password"
-placeholder="Password"
-value={password}
-onChange={(e)=>setPassword(e.target.value)}
-/>
-
-<button>
-Login
-</button>
-
-<p>
-New User?
-
-<Link to="/register">
-Register
-</Link>
-
-</p>
-
-</form>
-
-</div>
-
-</div>
-
-)
-
+    </div>
+  );
 }
 
 export default LoginPage;

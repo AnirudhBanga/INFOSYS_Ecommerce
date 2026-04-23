@@ -1,174 +1,197 @@
-import {
-useState
-}
-from "react";
+import { useState } from "react";
+import "../style/register.css";
+import { useNavigate, Link } from "react-router-dom";
 
-import {
-useNavigate,
-Link
-}
-from "react-router-dom";
+function RegisterPage() {
 
-function RegisterPage(){
+  const navigate = useNavigate();
 
-const navigate=
-useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    gender: "",
+    age: "",
+    phoneNo: ""
+  });
 
-const [form,setForm]=
-useState({
+  const [popup, setPopup] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
 
-name:"",
-email:"",
-password:"",
-gender:"",
-age:"",
-phoneNo:""
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const [ageError, setAgeError] = useState(false);
 
-});
+  // ✅ Input handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-const handleChange=(e)=>{
+    setForm({
+      ...form,
+      [name]: value
+    });
 
-setForm({
+    // 🔐 Password strength logic
+    if (name === "password") {
+      if (value.length < 6) {
+        setPasswordStrength("weak");
+      } else if (
+        /[A-Z]/.test(value) &&
+        /[0-9]/.test(value)
+      ) {
+        setPasswordStrength("strong");
+      } else {
+        setPasswordStrength("medium");
+      }
+    }
 
-...form,
+    // 🔢 Age validation
+    if (name === "age") {
+      if (!/^\d*$/.test(value)) {
+        setAgeError(true);
+      } else {
+        setAgeError(false);
+      }
+    }
+  };
 
-[e.target.name]:
-e.target.value
+  // ✅ Popup helper
+  const showMessage = (type, message) => {
+    setPopup({ show: true, type, message });
 
-});
+    setTimeout(() => {
+      setPopup({ show: false, type: "", message: "" });
+    }, 2000);
+  };
 
-};
+  // ✅ Submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const handleSubmit=async(e)=>{
+    if (ageError) {
+      showMessage("error", "Age must be a number");
+      return;
+    }
 
-e.preventDefault();
+    try {
+      const res = await fetch(
+        "http://localhost:8081/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(form)
+        }
+      );
 
-try{
+      if (res.ok) {
+        showMessage("success", "Registration Successful");
 
-const res=
-await fetch(
-"http://localhost:8081/api/auth/register",
-{
-method:"POST",
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
 
-headers:{
-"Content-Type":"application/json"
-},
+      } else {
+        showMessage("error", "Registration Failed");
+      }
 
-body:JSON.stringify(form)
+    } catch (error) {
+      console.log(error);
+      showMessage("error", "Server Error");
+    }
+  };
 
-}
-);
+  return (
 
-if(res.ok){
+    <div className="container">
 
-alert(
-"Registration Successful"
-);
+      <div className="card">
 
-navigate("/");
+        <h2>Create Account</h2>
 
-}else{
+        <form onSubmit={handleSubmit}>
 
-alert(
-"Registration Failed"
-);
+          <input
+            name="name"
+            placeholder="Full Name"
+            onChange={handleChange}
+            required
+          />
 
-}
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+          />
 
-}catch(error){
+          {/* 🔐 Password */}
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className={passwordStrength}
+            required
+          />
 
-console.log(error);
+          <select
+            name="gender"
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
 
-alert("Server Error");
+          {/* 🔢 Age */}
+          <input
+            name="age"
+            type="text"
+            placeholder="Age"
+            onChange={handleChange}
+            className={ageError ? "input-error" : ""}
+            required
+          />
 
-}
+          <input
+            name="phoneNo"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            required
+          />
 
-};
+          <button type="submit">
+            Register
+          </button>
 
-return(
+          <p>
+            Already registered?
+            <Link to="/"> Login</Link>
+          </p>
 
-<div className="container">
+        </form>
+      </div>
 
-<div className="card">
+      {/* ✅ Popup */}
+      {popup.show && (
+        <div className="popup">
+          <div className={`popup-box ${popup.type}`}>
+            <h3>
+              {popup.type === "success" ? "✅ Success" : "❌ Error"}
+            </h3>
+            <p>{popup.message}</p>
+          </div>
+        </div>
+      )}
 
-<h2>Create Account</h2>
-
-<form onSubmit={handleSubmit}>
-
-<input
-name="name"
-placeholder="Full Name"
-onChange={handleChange}
-/>
-
-<input
-name="email"
-type="email"
-placeholder="Email"
-onChange={handleChange}
-/>
-
-<input
-name="password"
-type="password"
-placeholder="Password"
-onChange={handleChange}
-/>
-
-<select
-name="gender"
-onChange={handleChange}
->
-
-<option value="">
-Select Gender
-</option>
-
-<option value="Male">
-Male
-</option>
-
-<option value="Female">
-Female
-</option>
-
-</select>
-
-<input
-name="age"
-placeholder="Age"
-onChange={handleChange}
-/>
-
-<input
-name="phoneNo"
-placeholder="Phone Number"
-onChange={handleChange}
-/>
-
-<button>
-Register
-</button>
-
-<p>
-
-Already registered?
-
-<Link to="/">
-Login
-</Link>
-
-</p>
-
-</form>
-
-</div>
-
-</div>
-
-)
-
+    </div>
+  );
 }
 
 export default RegisterPage;
