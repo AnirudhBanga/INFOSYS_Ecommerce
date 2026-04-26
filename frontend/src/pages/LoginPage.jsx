@@ -4,115 +4,186 @@ import { useNavigate, Link } from "react-router-dom";
 
 function LoginPage() {
 
-  const navigate = useNavigate();
+const navigate=useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const [email,setEmail]=useState("");
+const [password,setPassword]=useState("");
 
-  const [popup, setPopup] = useState({
-    show: false,
-    type: "",
-    message: ""
-  });
+const [popup,setPopup]=useState({
+show:false,
+type:"",
+message:""
+});
 
-  // ✅ Reusable popup function
-  const showMessage = (type, message) => {
-    setPopup({ show: true, type, message });
 
-    setTimeout(() => {
-      setPopup({ show: false, type: "", message: "" });
-    }, 2000);
-  };
+const showMessage=(type,message)=>{
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+setPopup({
+show:true,
+type:type,
+message:message
+});
 
-    try {
-      const res = await fetch(
-        "http://localhost:8081/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
-        }
-      );
+setTimeout(()=>{
+setPopup({
+show:false,
+type:"",
+message:""
+});
+},2000);
 
-      if (res.ok) {
-        const data = await res.json();
+};
 
-        localStorage.setItem("token", data.token);
 
-        showMessage("success", "Login Successful");
+const handleLogin=async(e)=>{
 
-        // redirect after popup
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
+e.preventDefault();
 
-      } else {
-        showMessage("error", "Invalid Login Credentials");
-      }
+try{
 
-    } catch (error) {
-      console.log(error);
-      showMessage("error", "Server Error");
-    }
-  };
+const res=
+await fetch(
+"http://localhost:8081/api/auth/login",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email,
+password
+})
+}
+);
 
-  return (
 
-    <div className="container">
+if(res.ok){
 
-      <div className="card">
+const data=await res.json();
 
-        <h2>Login</h2>
+localStorage.setItem(
+"token",
+data.token
+);
 
-        <form onSubmit={handleLogin}>
+showMessage(
+"success",
+"Login Successful"
+);
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+setTimeout(()=>{
+navigate("/dashboard");
+},2000);
 
-          <button type="submit">
-            Login
-          </button>
+}
 
-          <p>
-            New User?
-            <Link to="/register"> Register</Link>
-          </p>
+else{
 
-        </form>
-      </div>
+showMessage(
+"error",
+"Invalid Login Credentials"
+);
 
-      {/* ✅ Popup UI */}
-      {popup.show && (
-        <div className="popup">
-          <div className={`popup-box ${popup.type}`}>
-            <h3>
-              {popup.type === "success" ? "✅ Success" : "❌ Error"}
-            </h3>
-            <p>{popup.message}</p>
-          </div>
-        </div>
-      )}
+}
 
-    </div>
-  );
+}
+
+catch(error){
+
+console.log(error);
+
+showMessage(
+"error",
+"Server Error"
+);
+
+}
+
+};
+
+
+
+return(
+
+<div className="container">
+
+<div className="card">
+
+<h2>Login</h2>
+
+<form onSubmit={handleLogin}>
+
+<input
+type="email"
+placeholder="Email"
+value={email}
+onChange={(e)=>
+setEmail(e.target.value)
+}
+required
+/>
+
+
+<input
+type="password"
+placeholder="Password"
+value={password}
+onChange={(e)=>
+setPassword(e.target.value)
+}
+required
+/>
+
+
+<button type="submit">
+Login
+</button>
+
+
+<p>
+New User?
+<Link to="/register">
+ Register
+</Link>
+</p>
+
+</form>
+
+</div>
+
+
+
+{popup.show && (
+
+<div className="popup">
+
+<div className={`popup-box ${popup.type}`}>
+
+<h3>
+{
+popup.type==="success"
+?
+"✅ Success"
+:
+"❌ Error"
+}
+</h3>
+
+<p>
+{popup.message}
+</p>
+
+</div>
+
+</div>
+
+)}
+
+</div>
+
+)
+
 }
 
 export default LoginPage;

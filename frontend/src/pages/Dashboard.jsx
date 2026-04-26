@@ -1,26 +1,35 @@
-import {useEffect,useState}
+import { useEffect, useState }
 from "react";
-import {useNavigate}
+
+import { useNavigate }
 from "react-router-dom";
-import '../style/dashboard.css';
+
+import "../style/dashboard.css";
+
+
 function Dashboard(){
 
 const navigate=useNavigate();
 
-const [message,setMessage]=
-useState("");
+const [message,setMessage]=useState("");
 
 useEffect(()=>{
 
 fetchProtectedData();
 
-},[]);
+},[navigate]);
 
 
 const fetchProtectedData=async()=>{
 
 const token=
 localStorage.getItem("token");
+
+
+if(!token){
+navigate("/");
+return;
+}
 
 try{
 
@@ -34,6 +43,7 @@ Authorization:
 }
 }
 );
+
 
 if(res.status===401){
 
@@ -50,9 +60,15 @@ await res.text();
 
 setMessage(data);
 
-}catch(error){
+}
+
+catch(error){
 
 console.log(error);
+
+setMessage(
+"Error loading dashboard"
+);
 
 }
 
@@ -61,13 +77,12 @@ console.log(error);
 
 const logout=()=>{
 
-localStorage.removeItem(
-"token"
-);
+localStorage.removeItem("token");
 
 navigate("/");
 
 };
+
 
 return(
 
@@ -84,6 +99,7 @@ Logout
 </button>
 
 </nav>
+
 
 <div className="welcome">
 
