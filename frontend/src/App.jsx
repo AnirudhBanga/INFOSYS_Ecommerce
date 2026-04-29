@@ -1,9 +1,16 @@
-import { BrowserRouter,Routes,Route,Navigate }
+import {
+BrowserRouter,
+Routes,
+Route,
+Navigate
+}
 from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+
 
 function PrivateRoute({children}){
 
@@ -12,13 +19,15 @@ localStorage.getItem("token");
 
 return token
 ? children
-: <Navigate to="/" replace />;
+: <Navigate to="/" replace/>;
 
 }
+
 
 function App(){
 
 return(
+
 <BrowserRouter>
 
 <Routes>
@@ -42,9 +51,20 @@ element={
 }
 />
 
+
+<Route
+path="/admin"
+element={
+<PrivateRoute>
+<AdminDashboard/>
+</PrivateRoute>
+}
+/>
+
 </Routes>
 
 </BrowserRouter>
+
 )
 
 }

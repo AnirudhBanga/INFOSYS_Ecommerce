@@ -66,6 +66,11 @@ localStorage.setItem(
 data.token
 );
 
+localStorage.setItem(
+"role",
+data.role
+);
+
 showMessage(
 "success",
 "Login Successful"
@@ -73,7 +78,14 @@ showMessage(
 
 
 setTimeout(()=>{
+
+if(data.role==="ADMIN"){
+navigate("/admin");
+}
+else{
 navigate("/dashboard");
+}
+
 },2000);
 
 }

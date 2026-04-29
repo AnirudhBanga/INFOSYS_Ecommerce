@@ -13,53 +13,80 @@ import com.infosys.backend.model.User;
 import com.infosys.backend.security.JwtUtil;
 import com.infosys.backend.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins="http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+@Autowired
+private JwtUtil jwtUtil;
 
-    @Autowired
-    private UserService userService;
+@Autowired
+private UserService userService;
 
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
-            @Valid @RequestBody User user) {
 
-        User savedUser = userService.register(user);
+@PostMapping("/register")
+public ResponseEntity<?> register(
+@Valid @RequestBody User user){
 
-        savedUser.setPassword(null);
+user.setRole("USER");
 
-        return ResponseEntity.ok(savedUser);
-    }
+User savedUser=
+userService.register(user);
 
-    @GetMapping("/dashboard")
-public String dashboard() {
-    return "Protected API Accessed!";
+savedUser.setPassword(null);
+
+return ResponseEntity.ok(
+savedUser
+);
+
 }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(
-            @RequestBody User user) {
 
-        User existingUser = userService.login(
-                user.getEmail(),
-                user.getPassword()
-        );
 
-        String token = jwtUtil.generateToken(
-                existingUser.getEmail()
-        );
+@PostMapping("/login")
+public ResponseEntity<?> login(
+@RequestBody User user){
 
-        // RETURN JSON NOT PLAIN STRING
-        Map<String,String> response =
-                new HashMap<>();
+User existingUser=
+userService.login(
+user.getEmail(),
+user.getPassword()
+);
 
-        response.put("token", token);
 
-        return ResponseEntity.ok(response);
-    }
+String token=
+jwtUtil.generateToken(
+existingUser.getEmail()
+);
+
+
+Map<String,String> response=
+new HashMap<>();
+
+response.put(
+"token",
+token
+);
+
+response.put(
+"role",
+existingUser.getRole()
+);
+
+return ResponseEntity.ok(
+response
+);
+
+}
+
+
+@GetMapping("/dashboard")
+public String dashboard(){
+
+return "Protected API Accessed!";
+
+}
+
 }
