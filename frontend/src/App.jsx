@@ -11,6 +11,7 @@ import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 
+import Products from "./pages/Products";
 
 function PrivateRoute({children}){
 
@@ -57,6 +58,15 @@ path="/admin"
 element={
 <PrivateRoute>
 <AdminDashboard/>
+</PrivateRoute>
+}
+/>
+
+<Route
+path="/products"
+element={
+<PrivateRoute>
+<Products/>
 </PrivateRoute>
 }
 />
