@@ -1,0 +1,57 @@
+.admin-page { background: var(--bg); min-height: 100vh; }
+
+.admin-grid { display: grid; grid-template-columns: 1fr 320px; gap: 32px; padding-bottom: 80px; }
+@media(max-width:900px){ .admin-grid { grid-template-columns: 1fr; } }
+
+.admin-card {
+  background: var(--bg3); border: 1px solid var(--gold-border);
+  border-radius: 4px; padding: 32px;
+}
+.admin-card-title { font-family: var(--font-serif); font-size: 24px; color: var(--text); margin-bottom: 24px; }
+.admin-form { display: flex; flex-direction: column; gap: 16px; }
+
+/* Image section */
+.admin-img-section {
+  background: var(--bg4); border: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--radius); padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* File upload styled button */
+.file-upload-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg3); border: 1px dashed var(--gold-border);
+  color: var(--gold); font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 11px 20px; border-radius: var(--radius);
+  cursor: pointer; transition: all .2s;
+}
+.file-upload-label:hover { background: var(--gold-dim); border-style: solid; }
+
+/* Image preview */
+.img-preview-wrap {
+  position: relative; display: inline-flex; align-items: flex-start; gap: 10px;
+}
+.img-preview {
+  width: 100px; height: 100px; object-fit: cover;
+  border-radius: var(--radius); border: 1px solid var(--gold-border);
+}
+.img-clear {
+  background: rgba(224,85,85,.15); border: 1px solid rgba(224,85,85,.3);
+  color: var(--red); font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: var(--radius); cursor: pointer;
+  transition: all .2s;
+}
+.img-clear:hover { background: rgba(224,85,85,.3); }
+
+/* Stat cards */
+.stat-card {
+  background: var(--bg3); border: 1px solid rgba(255,255,255,.05);
+  border-radius: 4px; padding: 20px 24px;
+  display: flex; align-items: center; gap: 16px;
+  transition: border-color .2s;
+}
+.stat-card:hover { border-color: var(--gold-border); }
+.stat-card-icon { font-size: 28px; }
+.stat-card-value { font-family: var(--font-serif); font-size: 26px; color: var(--gold); font-weight: 700; }
+.stat-card-label { font-size: 11px; color: var(--text2); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }

@@ -1,0 +1,114 @@
+.detail-page { background: var(--bg); min-height: 100vh; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  padding: 36px 0 32px; font-size: 12px;
+}
+.bc-link { color: var(--text2); cursor: pointer; transition: color .2s; }
+.bc-link:hover { color: var(--gold); }
+.bc-sep { color: var(--text3); }
+.bc-current { color: var(--text); font-weight: 500; }
+
+.detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: start; padding-bottom: 20px;
+}
+@media(max-width:900px){ .detail-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+/* Image */
+.detail-images { position: sticky; top: 90px; }
+.detail-main-img-wrap {
+  position: relative; border-radius: 4px; overflow: hidden;
+  background: var(--bg3); border: 1px solid rgba(255,255,255,.05);
+}
+.detail-main-img {
+  width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+}
+.detail-main-img:hover { transform: scale(1.04); }
+.detail-oos {
+  position: absolute; inset: 0;
+  background: rgba(8,8,8,.6);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-size: 22px; color: var(--text);
+  letter-spacing: 3px; text-transform: uppercase;
+}
+
+/* Info */
+.detail-name {
+  font-family: var(--font-serif);
+  font-size: clamp(28px,4vw,44px); font-weight: 700;
+  color: var(--text); line-height: 1.1; margin: 10px 0 20px;
+}
+.detail-price-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.detail-price { font-family: var(--font-serif); font-size: 34px; font-weight: 700; color: var(--gold); }
+.detail-original-price { font-size: 18px; color: var(--text3); text-decoration: line-through; }
+.detail-desc { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 20px; }
+
+.detail-stock {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text2); margin-bottom: 28px;
+}
+.stock-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.stock-dot.in  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.stock-dot.out { background: var(--red); }
+
+/* Sizes */
+.size-section { margin-bottom: 28px; }
+.size-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); }
+.size-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.size-btn {
+  width: 50px; height: 46px;
+  background: var(--bg3); border: 1px solid rgba(255,255,255,.07);
+  color: var(--text2); font-family: var(--font-sans);
+  font-size: 13px; font-weight: 500; border-radius: var(--radius);
+  cursor: pointer; transition: all .2s;
+}
+.size-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.size-btn.selected { background: var(--gold); border-color: var(--gold); color: #080808; font-weight: 700; }
+
+/* Actions row */
+.detail-actions { display: flex; gap: 10px; margin-bottom: 28px; align-items: center; }
+
+/* ── Quantity controls (shown after add to cart) ── */
+.detail-qty-control {
+  flex: 1;
+  display: flex; align-items: center;
+  background: var(--bg3); border: 1px solid var(--gold-border);
+  border-radius: var(--radius); overflow: hidden; height: 48px;
+}
+.dqty-btn {
+  background: none; border: none;
+  color: var(--gold); font-size: 20px; font-weight: 300;
+  width: 52px; height: 100%;
+  cursor: pointer; transition: background .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.dqty-btn:hover { background: var(--gold-dim); }
+.dqty-plus { border-left: 1px solid var(--gold-border); }
+.dqty-btn:first-child { border-right: 1px solid var(--gold-border); }
+.dqty-display {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0;
+}
+.dqty-num { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1; }
+.dqty-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-top: 1px; }
+
+/* Wishlist heart button on detail page */
+.detail-wish-btn {
+  background: var(--bg3); border: 1px solid rgba(255,255,255,.07);
+  color: var(--text2); width: 48px; height: 48px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .2s; flex-shrink: 0;
+}
+.detail-wish-btn:hover { border-color: rgba(224,85,85,.4); color: #e05555; }
+.detail-wish-btn.wishlisted { background: rgba(224,85,85,.15); border-color: rgba(224,85,85,.5); color: #e05555; }
+.detail-wish-btn.wishlisted svg { fill: #e05555; stroke: #e05555; }
+
+.detail-features {
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+}
+.detail-feature {
+  font-size: 13px; color: var(--text2);
+  display: flex; align-items: center; gap: 10px;
+}

@@ -5,77 +5,159 @@ import com.infosys.backend.repository.ProductRepository;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins="http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173")
+public class ProductController {
 
-public class ProductController{
+    private final ProductRepository productRepository;
+    private static final String UPLOAD_DIR = "uploads/";
 
-private final ProductRepository productRepository;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-public ProductController(
-ProductRepository productRepository){
-this.productRepository=
-productRepository;
-}
+    // ── GET all products ──────────────────────────────────────────────────────
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 
+    // ── GET single product by ID ──────────────────────────────────────────────
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    // ── GET search by keyword ─────────────────────────────────────────────────
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam String keyword) {
+        return productRepository.findByNameContainingIgnoreCase(keyword);
+    }
 
-@PostMapping("/add")
-public ResponseEntity<?> addProduct(
-@RequestBody Product product,
-@RequestHeader("Role") String role
-){
+    // ── POST add product (FIXED: URL is /api/products, auth via JWT not header) ─
+    @PostMapping
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        try {
+            Product saved = productRepository.save(product);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error saving product: " + e.getMessage());
+        }
+    }
 
-if(!role.equals("ADMIN")){
+    // ── POST /api/products/add (kept for backward compat) ────────────────────
+    @PostMapping("/add")
+    public ResponseEntity<?> addProductAlt(@RequestBody Product product) {
+        return addProduct(product);
+    }
 
-return ResponseEntity
-.status(403)
-.body("Access Denied");
+    // ── PUT update product ────────────────────────────────────────────────────
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(
+            @PathVariable Long id,
+            @RequestBody Product updated) {
 
-}
+        return productRepository.findById(id).map(existing -> {
+            existing.setName(updated.getName());
+            existing.setDescription(updated.getDescription());
+            existing.setPrice(updated.getPrice());
+            existing.setStock(updated.getStock());
+            existing.setCategory(updated.getCategory());
+            if (updated.getImageUrl() != null && !updated.getImageUrl().isEmpty()) {
+                existing.setImageUrl(updated.getImageUrl());
+            }
+            return ResponseEntity.ok(productRepository.save(existing));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 
-return ResponseEntity.ok(
-productRepository.save(product)
-);
+    // ── DELETE product ────────────────────────────────────────────────────────
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        if (!productRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        productRepository.deleteById(id);
+        return ResponseEntity.ok("Product deleted successfully");
+    }
 
-}
+    // ── POST upload image file for a product ─────────────────────────────────
+    // Frontend: POST /api/products/{id}/image  with FormData { file: <File> }
+    // Image saved to uploads/ folder on server, URL stored in product.imageUrl
+    @PostMapping("/{id}/image")
+    public ResponseEntity<?> uploadProductImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
 
+        Optional<Product> opt = productRepository.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
 
+        try {
+            // Create uploads/ folder if it doesn't exist
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) uploadDir.mkdirs();
 
-@GetMapping
-public List<Product> getAllProducts(){
+            // Save file with unique name
+            String ext      = getExtension(file.getOriginalFilename());
+            String filename = "product_" + id + "_" + UUID.randomUUID() + ext;
+            Path   filePath = Paths.get(UPLOAD_DIR + filename);
+            Files.write(filePath, file.getBytes());
 
-return productRepository.findAll();
+            // Store relative URL in product
+            String imageUrl = "/api/products/image/" + filename;
+            Product product = opt.get();
+            product.setImageUrl(imageUrl);
+            productRepository.save(product);
 
-}
+            return ResponseEntity.ok("{\"imageUrl\":\"" + imageUrl + "\"}");
 
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Image upload failed: " + e.getMessage());
+        }
+    }
 
+    // ── GET serve image file ──────────────────────────────────────────────────
+    // <img src="http://localhost:8081/api/products/image/product_3_xxx.jpg" />
+    @GetMapping("/image/{filename}")
+    public ResponseEntity<byte[]> serveImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(UPLOAD_DIR + filename);
+            if (!Files.exists(filePath)) return ResponseEntity.notFound().build();
 
-@GetMapping("/{id}")
-public Product getProductById(
-@PathVariable Long id){
+            byte[]    data      = Files.readAllBytes(filePath);
+            MediaType mediaType = detectMediaType(filename);
+            return ResponseEntity.ok().contentType(mediaType).body(data);
 
-return productRepository
-.findById(id)
-.orElseThrow();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-}
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    private String getExtension(String filename) {
+        if (filename == null || !filename.contains(".")) return ".jpg";
+        return filename.substring(filename.lastIndexOf("."));
+    }
 
-
-
-@GetMapping("/search")
-public List<Product> searchProducts(
-@RequestParam String keyword){
-
-return productRepository
-.findByNameContainingIgnoreCase(
-keyword
-);
-
-}
-
+    private MediaType detectMediaType(String filename) {
+        String lower = filename.toLowerCase();
+        if (lower.endsWith(".png"))  return MediaType.IMAGE_PNG;
+        if (lower.endsWith(".gif"))  return MediaType.IMAGE_GIF;
+        if (lower.endsWith(".webp")) return MediaType.parseMediaType("image/webp");
+        return MediaType.IMAGE_JPEG;
+    }
 }
