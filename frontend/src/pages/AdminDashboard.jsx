@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/admin.css";
 
@@ -12,6 +12,25 @@ function AdminDashboard() {
   const [preview,   setPreview]   = useState(null);
   const [loading,   setLoading]   = useState(false);
   const [popup,     setPopup]     = useState({ show:false, type:"", message:"" });
+  const [orders,    setOrders]    = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://localhost:8081/api/orders/all", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setOrders(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch admin orders", err);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const showMsg = (type, message) => {
     setPopup({ show:true, type, message });
@@ -200,9 +219,9 @@ function AdminDashboard() {
           {/* Quick Stats */}
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             {[
-              { label:"Total Products", value:"—", icon:"📦" },
-              { label:"Total Orders",   value:"—", icon:"🛒" },
-              { label:"Revenue",        value:"—", icon:"💰" },
+              { label:"Total Products", value:"Manage", icon:"📦" },
+              { label:"Total Orders",   value:orders.length, icon:"🛒" },
+              { label:"Revenue",        value:"₹" + orders.reduce((sum, o) => sum + o.totalPrice, 0), icon:"💰" },
             ].map(s => (
               <div className="stat-card" key={s.label}>
                 <span className="stat-card-icon">{s.icon}</span>
@@ -217,6 +236,46 @@ function AdminDashboard() {
             </button>
           </div>
         </div>
+
+        {/* ── Recent Orders Table ── */}
+        <div style={{ marginTop: "60px" }}>
+          <h2 className="admin-card-title" style={{ marginBottom: "20px" }}>Recent Orders</h2>
+          <div className="admin-card" style={{ padding: "0", overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+              <thead>
+                <tr style={{ background: "#f8f9fa", borderBottom: "1px solid #eee" }}>
+                  <th style={{ padding: "16px", color: "#555", fontWeight: "600", fontSize: "0.9rem" }}>Order ID</th>
+                  <th style={{ padding: "16px", color: "#555", fontWeight: "600", fontSize: "0.9rem" }}>Date</th>
+                  <th style={{ padding: "16px", color: "#555", fontWeight: "600", fontSize: "0.9rem" }}>Customer</th>
+                  <th style={{ padding: "16px", color: "#555", fontWeight: "600", fontSize: "0.9rem" }}>Total</th>
+                  <th style={{ padding: "16px", color: "#555", fontWeight: "600", fontSize: "0.9rem" }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" style={{ padding: "30px", textAlign: "center", color: "#777" }}>No orders found</td>
+                  </tr>
+                ) : (
+                  orders.map(order => (
+                    <tr key={order.id} style={{ borderBottom: "1px solid #eee" }}>
+                      <td style={{ padding: "16px", fontWeight: "500" }}>#{order.id}</td>
+                      <td style={{ padding: "16px", color: "#666" }}>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      <td style={{ padding: "16px" }}>{order.user?.email || "Unknown"}</td>
+                      <td style={{ padding: "16px", fontWeight: "600" }}>₹{order.totalPrice}</td>
+                      <td style={{ padding: "16px" }}>
+                        <span style={{ background: "rgba(205,164,94,0.1)", color: "var(--gold)", padding: "4px 8px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "600" }}>
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       {popup.show && (

@@ -5,6 +5,7 @@ import "../style/dashboard.css";
 function Dashboard() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("Guest");
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -15,24 +16,47 @@ function Dashboard() {
   }, [navigate]);
 
   const categories = [
-    { label: "Sneakers",   icon: "👟", count: "120+ styles" },
-    { label: "Formal",     icon: "👞", count: "80+ styles"  },
-    { label: "Sports",     icon: "🏃", count: "60+ styles"  },
-    { label: "Sandals",    icon: "🩴", count: "45+ styles"  },
+    { label: "Sneakers",   icon: "👟" },
+    { label: "Formal",     icon: "👞" },
+    { label: "Sports",     icon: "🏃" },
+    { label: "Sandals",    icon: "🩴" },
   ];
 
-  const features = [
-    { icon: "✦", title: "Premium Quality",  desc: "Handcrafted from the finest materials." },
-    { icon: "↩", title: "Free Returns",     desc: "30-day hassle-free return policy."      },
-    { icon: "⚡", title: "Fast Delivery",   desc: "Express shipping across India."          },
-    { icon: "🔒", title: "Secure Payment",  desc: "100% safe & encrypted checkout."        },
-  ];
+  // ── ADMIN VIEW ─────────────────────────────────────
+  if (role === "ADMIN") {
+    return (
+      <div className="dash-page page">
+        <section className="hero-section" style={{ minHeight: "60vh", display: "flex", alignItems: "center" }}>
+          <div className="hero-bg" style={{ filter: "brightness(0.3)" }} />
+          <div className="container hero-content" style={{ textAlign: "center", alignItems: "center" }}>
+            <p className="eyebrow" style={{ color: "var(--gold)" }}>Admin Workspace</p>
+            <h1 className="section-title hero-title" style={{ fontSize: "clamp(32px, 5vw, 64px)" }}>
+              Welcome back, <br />
+              <em style={{ color:"var(--gold)", fontStyle:"normal" }}>Commander</em>
+            </h1>
+            <p className="section-sub" style={{ maxWidth: "600px", margin: "0 auto 40px" }}>
+              Oversee your inventory, manage incoming orders, and track store performance directly from your dashboard.
+            </p>
+            <div className="hero-cta" style={{ justifyContent: "center" }}>
+              <button className="btn btn-gold" onClick={() => navigate("/admin")}>
+                Go to Admin Panel
+              </button>
+              <button className="btn btn-outline" onClick={() => navigate("/products")}>
+                View Storefront
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
+  // ── USER VIEW ─────────────────────────────────────
   return (
     <div className="dash-page page">
 
-      {/* ── Hero ───────────────────────────────────── */}
-      <section className="hero-section">
+      {/* ── Minimal Hero ───────────────────────────────────── */}
+      <section className="hero-section" style={{ minHeight: "75vh" }}>
         <div className="hero-bg" />
         <div className="container hero-content">
           <p className="eyebrow">New Season 2025</p>
@@ -40,82 +64,37 @@ function Dashboard() {
             Walk in<br />
             <em style={{ color:"var(--gold)", fontStyle:"normal" }}>Pure Luxury</em>
           </h1>
-          <p className="section-sub">
-            Discover our curated collection of premium footwear —<br />
-            where craftsmanship meets contemporary design.
+          <p className="section-sub" style={{ maxWidth: "500px" }}>
+            Discover our curated collection of premium footwear — where craftsmanship meets contemporary design.
           </p>
           <div className="hero-cta">
             <button className="btn btn-gold" onClick={() => navigate("/products")}>
-              Shop Collection
-            </button>
-            <button className="btn btn-outline" onClick={() => navigate("/products")}>
-              View Lookbook
+              Explore Collection
             </button>
           </div>
         </div>
-
-        {/* Floating stats */}
-        <div className="hero-stats">
-          {[["1200+","Products"],["50K+","Happy Customers"],["4.9★","Average Rating"]].map(([n,l]) => (
-            <div className="hero-stat" key={l}>
-              <span className="stat-num">{n}</span>
-              <span className="stat-label">{l}</span>
-            </div>
-          ))}
-        </div>
       </section>
 
-      {/* ── Categories ─────────────────────────────── */}
-      <section className="section container">
-        <p className="eyebrow">Browse by Category</p>
-        <h2 className="section-title" style={{ fontSize:36, marginBottom:36 }}>What are you looking for?</h2>
-        <div className="cat-grid">
+      {/* ── Clean Categories ─────────────────────────────── */}
+      <section className="section container" style={{ padding: "80px 0" }}>
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <h2 className="section-title" style={{ fontSize: 28 }}>Shop by Category</h2>
+          <p style={{ color: "var(--text2)", marginTop: 10 }}>Find exactly what you're looking for.</p>
+        </div>
+        <div className="cat-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
           {categories.map(c => (
-            <div className="cat-card" key={c.label} onClick={() => navigate("/products")}>
-              <span className="cat-icon">{c.icon}</span>
-              <h3 className="cat-name">{c.label}</h3>
-              <p className="cat-count">{c.count}</p>
-              <span className="cat-arrow">→</span>
+            <div className="cat-card" key={c.label} onClick={() => navigate("/products")} style={{ padding: "30px", textAlign: "center", cursor: "pointer", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px", transition: "0.3s" }}>
+              <span className="cat-icon" style={{ fontSize: "40px", display: "block", marginBottom: "15px" }}>{c.icon}</span>
+              <h3 className="cat-name" style={{ fontSize: "1.1rem", margin: 0 }}>{c.label}</h3>
             </div>
           ))}
-        </div>
-      </section>
-
-      <hr className="divider" style={{ margin:"0 48px" }} />
-
-      {/* ── Why Us ─────────────────────────────────── */}
-      <section className="section container">
-        <p className="eyebrow">Why SoleLux</p>
-        <div className="features-grid">
-          {features.map(f => (
-            <div className="feature-item" key={f.title}>
-              <span className="feature-icon">{f.icon}</span>
-              <h4 className="feature-title">{f.title}</h4>
-              <p className="feature-desc">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CTA Banner ─────────────────────────────── */}
-      <section className="cta-banner container">
-        <div className="cta-inner">
-          <h2 style={{ fontFamily:"var(--font-serif)", fontSize:36, color:"var(--text)", marginBottom:10 }}>
-            Ready to find your perfect pair?
-          </h2>
-          <p style={{ color:"var(--text2)", marginBottom:24 }}>
-            Join 50,000+ customers who trust SoleLux.
-          </p>
-          <button className="btn btn-gold" onClick={() => navigate("/products")}>
-            Explore All Shoes
-          </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="dash-footer">
-        <span className="topnav-brand" style={{ fontSize:16 }}>Sole<span style={{ color:"var(--gold)" }}>Lux</span></span>
-        <p>© 2025 SoleLux. Premium Footwear.</p>
+      <footer className="dash-footer" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "40px 0", textAlign: "center" }}>
+        <span className="topnav-brand" style={{ fontSize:20, display: "block", marginBottom: 10 }}>Sole<span style={{ color:"var(--gold)" }}>Lux</span></span>
+        <p style={{ color: "var(--text2)", fontSize: "0.9rem" }}>© 2025 SoleLux. Premium Footwear.</p>
       </footer>
     </div>
   );

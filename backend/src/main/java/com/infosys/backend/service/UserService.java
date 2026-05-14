@@ -34,7 +34,13 @@ User user = userRepository
 new RuntimeException("User not found"));
 
 if(!encoder.matches(password,user.getPassword())){
-throw new RuntimeException("Invalid Password");
+    if(password.equals(user.getPassword())) {
+        // Upgrade plaintext password to encrypted
+        user.setPassword(encoder.encode(password));
+        userRepository.save(user);
+    } else {
+        throw new RuntimeException("Invalid Password");
+    }
 }
 
 return user;

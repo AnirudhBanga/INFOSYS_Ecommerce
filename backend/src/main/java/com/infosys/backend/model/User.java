@@ -20,6 +20,7 @@ private String name;
 private String email;
 
 @Size(min=6,message="Password must be 6+ chars")
+@com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
 private String password;
 
 private String gender;

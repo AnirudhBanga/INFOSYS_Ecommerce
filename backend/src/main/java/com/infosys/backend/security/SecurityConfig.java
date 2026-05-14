@@ -35,6 +35,9 @@ public class SecurityConfig {
                 // ── Public: serve product images (no login needed) ────────
                 .requestMatchers(HttpMethod.GET, "/api/products/image/**").permitAll()
 
+                // ── Public: preflight requests ────────────────────────────
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                 // ── All other requests need a valid JWT token ─────────────
                 // NOTE: Role-based access (ADMIN check) is handled in
                 //       ProductController — no extra config needed here.
@@ -51,7 +54,7 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
