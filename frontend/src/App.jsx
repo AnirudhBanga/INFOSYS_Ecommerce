@@ -104,13 +104,17 @@ function Navbar({
           <Link to="/admin" className="nav-pill" style={{ marginRight: "10px" }}>Admin Panel</Link>
         )}
 
-        <Link to="/wishlist" className="cart-icon-btn" style={{ marginRight: "15px" }}>
-          ♡ {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
-        </Link>
+        {role !== "ADMIN" && (
+          <>
+            <Link to="/wishlist" className="cart-icon-btn" style={{ marginRight: "15px" }}>
+              ♡ {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
+            </Link>
 
-        <Link to="/cart" className="cart-icon-btn" style={{ marginRight: "20px" }}>
-          🛒 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-        </Link>
+            <Link to="/cart" className="cart-icon-btn" style={{ marginRight: "20px" }}>
+              🛒 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </Link>
+          </>
+        )}
 
         {isLoggedIn ? (
           <div style={{ position: "relative" }} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>

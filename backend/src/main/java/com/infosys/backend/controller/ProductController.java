@@ -5,6 +5,7 @@ import com.infosys.backend.repository.ProductRepository;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -94,9 +95,11 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
+    @Autowired
+    private com.infosys.backend.service.CloudinaryService cloudinaryService;
+
     // ── POST upload image file for a product ─────────────────────────────────
-    // Frontend: POST /api/products/{id}/image  with FormData { file: <File> }
-    // Image saved to uploads/ folder on server, URL stored in product.imageUrl
+    // Image saved to Cloudinary, URL stored in product.imageUrl
     @PostMapping("/{id}/image")
     public ResponseEntity<?> uploadProductImage(
             @PathVariable Long id,
@@ -106,18 +109,10 @@ public class ProductController {
         if (opt.isEmpty()) return ResponseEntity.notFound().build();
 
         try {
-            // Create uploads/ folder if it doesn't exist
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
+            // Upload to Cloudinary
+            String imageUrl = cloudinaryService.uploadImage(file);
 
-            // Save file with unique name
-            String ext      = getExtension(file.getOriginalFilename());
-            String filename = "product_" + id + "_" + UUID.randomUUID() + ext;
-            Path   filePath = Paths.get(UPLOAD_DIR + filename);
-            Files.write(filePath, file.getBytes());
-
-            // Store relative URL in product
-            String imageUrl = "/api/products/image/" + filename;
+            // Store secure URL in product
             Product product = opt.get();
             product.setImageUrl(imageUrl);
             productRepository.save(product);

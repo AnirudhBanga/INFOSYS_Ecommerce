@@ -258,8 +258,14 @@ function AdminDashboard() {
                   </tr>
                 ) : (
                   orders.map(order => (
-                    <tr key={order.id} style={{ borderBottom: "1px solid #eee" }}>
-                      <td style={{ padding: "16px", fontWeight: "500" }}>#{order.id}</td>
+                    <tr 
+                      key={order.id} 
+                      onClick={() => navigate(`/order/${order.id}`)}
+                      style={{ borderBottom: "1px solid #eee", cursor: "pointer", transition: "background 0.2s" }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "#fcfcfc"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                    >
+                      <td style={{ padding: "16px", fontWeight: "500", color: "var(--gold)" }}>#{order.id}</td>
                       <td style={{ padding: "16px", color: "#666" }}>{new Date(order.orderDate).toLocaleDateString()}</td>
                       <td style={{ padding: "16px" }}>{order.user?.email || "Unknown"}</td>
                       <td style={{ padding: "16px", fontWeight: "600" }}>₹{order.totalPrice}</td>
