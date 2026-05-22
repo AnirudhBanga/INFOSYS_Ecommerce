@@ -23,6 +23,7 @@ import Wishlist from "./pages/Wishlist";
 import Checkout from "./pages/Checkout";
 import OrderSummary from "./pages/OrderSummary";
 import MyOrders from "./pages/MyOrders";
+import Profile from "./pages/Profile";
 
 import "./index.css";
 
@@ -39,7 +40,10 @@ function Navbar({
 }) {
 
   const location = useLocation();
+  const navigate = useNavigate();
   const role = localStorage.getItem("role");
+  const [search, setSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const hideOn = ["/", "/register"];
 
@@ -52,6 +56,14 @@ function Navbar({
       ? "active"
       : "";
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      navigate(`/products?q=${encodeURIComponent(search.trim())}`);
+      setSearch("");
+    }
+  };
+
   return (
     <nav className="topnav solid">
 
@@ -63,76 +75,59 @@ function Navbar({
       </Link>
 
       <ul className="topnav-links">
-
         <li>
-          <Link
-            to="/dashboard"
-            className={isActive("/dashboard")}
-          >
+          <Link to="/dashboard" className={isActive("/dashboard")}>
             Home
           </Link>
         </li>
-
         <li>
-          <Link
-            to="/products"
-            className={isActive("/products")}
-          >
+          <Link to="/products" className={isActive("/products")}>
             Collection
           </Link>
         </li>
-
-        <li>
-          <Link
-            to="/wishlist"
-            className={isActive("/wishlist")}
-          >
-            Wishlist ({wishlistCount})
-          </Link>
-        </li>
-
-        {isLoggedIn && (
-          <li>
-            <Link
-              to="/my-orders"
-              className={isActive("/my-orders")}
-            >
-              My Orders
-            </Link>
-          </li>
-        )}
-
-        {role === "ADMIN" && (
-          <li>
-            <Link
-              to="/admin"
-              className={isActive("/admin")}
-            >
-              Admin Panel
-            </Link>
-          </li>
-        )}
-
       </ul>
 
-      <div className="topnav-right">
+      {/* Global Search */}
+      <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: "400px", margin: "0 40px", display: "flex", alignItems: "center" }}>
+        <input 
+          type="text" 
+          placeholder="Search products..." 
+          value={search} 
+          onChange={e => setSearch(e.target.value)}
+          style={{ width: "100%", padding: "10px 18px", borderRadius: "20px", border: "1px solid #ddd", outline: "none", fontSize: "13px", background: "#f9f9f9" }}
+        />
+      </form>
 
-        {isLoggedIn && (
-          <button
-            className="nav-ghost"
-            onClick={onLogout}
-          >
-            Logout
-          </button>
+      <div className="topnav-right">
+        
+        {role === "ADMIN" && (
+          <Link to="/admin" className="nav-pill" style={{ marginRight: "10px" }}>Admin Panel</Link>
         )}
 
-        <Link
-          to="/cart"
-          className="cart-icon-btn"
-        >
-          Cart ({cartCount})
+        <Link to="/wishlist" className="cart-icon-btn" style={{ marginRight: "15px" }}>
+          ♡ {wishlistCount > 0 && <span className="cart-badge">{wishlistCount}</span>}
         </Link>
 
+        <Link to="/cart" className="cart-icon-btn" style={{ marginRight: "20px" }}>
+          🛒 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+        </Link>
+
+        {isLoggedIn ? (
+          <div style={{ position: "relative" }} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+            <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", fontSize: "14px", fontWeight: "600", padding: "10px 0" }}>
+              👤 Account ▾
+            </div>
+            {showDropdown && (
+              <div style={{ position: "absolute", top: "100%", right: 0, background: "#fff", border: "1px solid #eaeaea", borderRadius: "8px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", minWidth: "160px", overflow: "hidden", zIndex: 1000, display: "flex", flexDirection: "column" }}>
+                <Link to="/profile" style={{ padding: "12px 16px", fontSize: "13px", color: "#333", borderBottom: "1px solid #f5f5f5" }} className="dropdown-item">My Profile</Link>
+                <Link to="/my-orders" style={{ padding: "12px 16px", fontSize: "13px", color: "#333", borderBottom: "1px solid #f5f5f5" }} className="dropdown-item">My Orders</Link>
+                <button onClick={onLogout} style={{ background: "none", border: "none", width: "100%", textAlign: "left", padding: "12px 16px", fontSize: "13px", color: "var(--red)", cursor: "pointer" }} className="dropdown-item">Logout</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link to="/" className="btn btn-dark" style={{ padding: "8px 20px", fontSize: "11px" }}>Login</Link>
+        )}
       </div>
     </nav>
   );
@@ -178,6 +173,26 @@ function AppInner() {
     setPopup({ show: true, type, message });
     setTimeout(() => setPopup({ show: false, type: "", message: "" }), 2500);
   };
+
+  // ─────────────────────────────────────
+  // GLOBAL AXIOS 401 INTERCEPTOR (T60)
+  // ─────────────────────────────────────
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          setIsLoggedIn(false);
+          navigate("/");
+          showMsg("error", "Session expired. Please log in again.");
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptor);
+  }, [navigate]);
 
   // ─────────────────────────────────────
   // FETCH CART
@@ -336,7 +351,7 @@ function AppInner() {
 
       fetchCart();
       showMsg("success", "Order placed successfully!");
-      navigate(`/order/${res.data.id}`);
+      navigate(`/order/${res.data.id}?success=true`);
 
     } catch (err) {
 
@@ -555,6 +570,16 @@ function AppInner() {
           element={
             <PrivateRoute>
               <MyOrders showMsg={showMsg} />
+            </PrivateRoute>
+          }
+        />
+
+        {/* PROFILE */}
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile showMsg={showMsg} />
             </PrivateRoute>
           }
         />

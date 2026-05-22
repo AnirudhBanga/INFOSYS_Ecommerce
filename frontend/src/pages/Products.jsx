@@ -2,7 +2,7 @@
 // ✅ Heart/Wishlist button on each card
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../style/products.css";
 
 /* Diverse shoe images — each index gets a different photo */
@@ -28,14 +28,35 @@ const CATEGORIES = ["All", "Sneakers", "Formal", "Sports", "Sandals", "Casual"];
 
 function Products({ addToCart, toggleWishlist, isWishlisted }) {
   const navigate  = useNavigate();
+  const location  = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const q = queryParams.get("q") || "";
+  const catParam = queryParams.get("category") || "All";
+
   const [products, setProducts] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [error,    setError]    = useState("");
-  const [search,   setSearch]   = useState("");
-  const [category, setCategory] = useState("All");
+  const [search,   setSearch]   = useState(q);
+  const [category, setCategory] = useState(
+    catParam !== "All" ? catParam.charAt(0).toUpperCase() + catParam.slice(1) : "All"
+  );
   const [sortBy,   setSortBy]   = useState("default");
   const [added,    setAdded]    = useState(null);
+
+  // Sync with URL when it changes
+  useEffect(() => {
+    const qParams = new URLSearchParams(location.search);
+    const newQ = qParams.get("q") || "";
+    const newCat = qParams.get("category") || "All";
+    
+    setSearch(newQ);
+    if(newCat !== "All") {
+      setCategory(newCat.charAt(0).toUpperCase() + newCat.slice(1));
+    } else {
+      setCategory("All");
+    }
+  }, [location.search]);
 
   /* Fetch products from backend */
   useEffect(() => {

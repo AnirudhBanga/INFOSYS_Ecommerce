@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const SHOE_IMGS = [
@@ -13,8 +13,11 @@ const SHOE_IMGS = [
 function OrderSummary({ showMsg }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const isSuccess = new URLSearchParams(location.search).get("success") === "true";
 
   const getImage = (p) => {
     if (!p) return SHOE_IMGS[0];
@@ -64,9 +67,18 @@ function OrderSummary({ showMsg }) {
     <div className="page container" style={{ maxWidth: "800px", padding: "40px 20px" }}>
       
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
-        <div style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</div>
-        <h1 style={{ color: "var(--green)", marginBottom: "10px" }}>Order Placed Successfully!</h1>
-        <p style={{ color: "#555" }}>Thank you for shopping with SoleLux. Your order is confirmed.</p>
+        {isSuccess ? (
+          <>
+            <div style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</div>
+            <h1 style={{ color: "var(--green)", marginBottom: "10px" }}>Order Placed Successfully!</h1>
+            <p style={{ color: "#555" }}>Thank you for shopping with SoleLux. Your order is confirmed.</p>
+          </>
+        ) : (
+          <>
+            <h1 style={{ color: "#111", marginBottom: "10px" }}>Order Details</h1>
+            <p style={{ color: "#555" }}>Review your order information below.</p>
+          </>
+        )}
       </div>
 
       <div style={{ background: "#fff", borderRadius: "12px", border: "1px solid #eee", padding: "30px", marginBottom: "30px" }}>

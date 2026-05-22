@@ -33,6 +33,9 @@ private String phoneNo;
 @Column(nullable=false)
 private String role="USER";
 
+private String address;
+private String dob;
+private String preferences;
 
 public Long getId(){ return id; }
 
@@ -75,5 +78,14 @@ return role;
 public void setRole(String role){
 this.role=role;
 }
+
+public String getAddress() { return address; }
+public void setAddress(String address) { this.address = address; }
+
+public String getDob() { return dob; }
+public void setDob(String dob) { this.dob = dob; }
+
+public String getPreferences() { return preferences; }
+public void setPreferences(String preferences) { this.preferences = preferences; }
 
 }

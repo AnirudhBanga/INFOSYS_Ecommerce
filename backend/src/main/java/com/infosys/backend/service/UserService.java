@@ -45,4 +45,44 @@ if(!encoder.matches(password,user.getPassword())){
 
 return user;
 }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public User updateProfile(String email, User updatedData) {
+        User user = getUserByEmail(email);
+        user.setName(updatedData.getName());
+        user.setPhoneNo(updatedData.getPhoneNo());
+        user.setAge(updatedData.getAge());
+        user.setGender(updatedData.getGender());
+        user.setAddress(updatedData.getAddress());
+        user.setDob(updatedData.getDob());
+        user.setPreferences(updatedData.getPreferences());
+        return userRepository.save(user);
+    }
+
+    public void updatePassword(String email, String oldPassword, String newPassword) {
+        User user = getUserByEmail(email);
+        
+        // Verify old password
+        if (!encoder.matches(oldPassword, user.getPassword())) {
+            // Also check plaintext for backward compatibility
+            if (!oldPassword.equals(user.getPassword())) {
+                throw new RuntimeException("Incorrect old password");
+            }
+        }
+        
+        // Update to new hashed password
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        User user = getUserByEmail(email);
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
 }
