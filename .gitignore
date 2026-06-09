@@ -1,0 +1,33 @@
+# Build and Target Outputs
+target/
+**/target/
+dist/
+**/dist/
+build/
+**/build/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment Variables & Sensitive Files
+.env
+.env.local
+.env.*.local
+*.env
+application.properties
+
+# Logs
+logs/
+**/logs/
+*.log
+**/test-output/
+
+# IDE & System Files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db

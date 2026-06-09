@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SoleLux E-Commerce Automation Suite">
+    <test name="Smoke Tests">
+        <classes>
+            <class name="com.infosys.automation.tests.SmokeTest"/>
+            <class name="com.infosys.automation.tests.RegisterTest"/>
+            <class name="com.infosys.automation.tests.LoginTest"/>
+            <class name="com.infosys.automation.tests.LogoutTest"/>
+        </classes>
+    </test>
+</suite>

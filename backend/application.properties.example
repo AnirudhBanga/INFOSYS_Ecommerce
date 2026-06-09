@@ -32,7 +32,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 # Security JWT
 # Env variables: JWT_SECRET (MUST be set to a secure, long random string in production!)
-jwt.secret=${JWT_SECRET:supersecretkey123456789}
+jwt.secret=${JWT_SECRET:supersecretkey1234567890supersecretkey1234567890}
 
 # Cloudinary Setup
 # Env variables: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
