@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "../style/admin.css";
 
 function AdminDashboard() {
@@ -18,7 +19,7 @@ function AdminDashboard() {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8081/api/orders/all", {
+        const res = await fetch(`${API_BASE_URL}/orders/all`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -65,7 +66,7 @@ function AdminDashboard() {
         imageUrl:    form.imageUrl || null,   // external URL if provided
       };
 
-      const res = await fetch("http://localhost:8081/api/products", {
+      const res = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +90,7 @@ function AdminDashboard() {
         const formData = new FormData();
         formData.append("file", imageFile);
 
-        const imgRes = await fetch(`http://localhost:8081/api/products/${savedProduct.id}/image`, {
+        const imgRes = await fetch(`${API_BASE_URL}/products/${savedProduct.id}/image`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` },
           body: formData,

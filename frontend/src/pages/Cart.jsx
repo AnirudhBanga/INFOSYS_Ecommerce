@@ -32,7 +32,7 @@ function Cart({
     if (p.imageUrl && p.imageUrl.startsWith("http")) {
       return p.imageUrl;
     }
-    return SHOE_IMGS[p.id % SHOE_IMGS.length];
+    return SHOE_IMGS[(p.id || 0) % SHOE_IMGS.length];
   };
 
   if (cartItems.length === 0) {
@@ -79,6 +79,7 @@ function Cart({
                   className="cart-item-img"
                   src={getImage(item.product)}
                   alt={item.product.name}
+                  onError={(e) => { e.target.src = SHOE_IMGS[0]; }}
                 />
 
                 <div className="cart-item-info">

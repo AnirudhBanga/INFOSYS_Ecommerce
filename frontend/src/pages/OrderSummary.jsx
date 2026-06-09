@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const SHOE_IMGS = [
   "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
@@ -31,7 +32,7 @@ function OrderSummary({ showMsg }) {
     const fetchOrder = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:8081/api/orders/${id}`, {
+        const res = await axios.get(`${API_BASE_URL}/orders/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setOrder(res.data);

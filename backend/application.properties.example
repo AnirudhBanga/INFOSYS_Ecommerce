@@ -1,0 +1,54 @@
+# Spring Boot Backend - Production Environment Properties Template
+
+# Copy this file to application.properties and replace placeholders,
+# or set the corresponding environment variables in your deployment hosting service (Render, Railway, AWS, etc.)
+
+spring.application.name=backend
+
+# Server Configuration
+# Env variable PORT is set automatically by host platforms (default: 8081)
+server.port=${PORT:8081}
+
+# Database Configuration
+# Env variables: SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD
+spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/ecommerce}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME:root}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:Anirudh}
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# Mail Configuration
+# Env variables: SPRING_MAIL_HOST, SPRING_MAIL_PORT, SPRING_MAIL_USERNAME, SPRING_MAIL_PASSWORD
+spring.mail.host=${SPRING_MAIL_HOST:smtp.gmail.com}
+spring.mail.port=${SPRING_MAIL_PORT:587}
+spring.mail.username=${SPRING_MAIL_USERNAME:officialanirudhbanga@gmail.com}
+spring.mail.password=${SPRING_MAIL_PASSWORD:}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# Security JWT
+# Env variables: JWT_SECRET (MUST be set to a secure, long random string in production!)
+jwt.secret=${JWT_SECRET:supersecretkey123456789}
+
+# Cloudinary Setup
+# Env variables: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+cloudinary.cloud-name=${CLOUDINARY_CLOUD_NAME:your_cloud_name}
+cloudinary.api-key=${CLOUDINARY_API_KEY:your_api_key}
+cloudinary.api-secret=${CLOUDINARY_API_SECRET:your_api_secret}
+
+# Razorpay Setup
+# Env variables: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+razorpay.key.id=${RAZORPAY_KEY_ID:rzp_test_your_key_id_here}
+razorpay.key.secret=${RAZORPAY_KEY_SECRET:your_key_secret_here}
+
+# CORS Origin Configuration
+# Env variables: CORS_ALLOWED_ORIGINS (Set to your deployed React URL, e.g. https://solelux.vercel.app)
+cors.allowed-origins=${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+# Production Safety Flag
+# Env variables: APP_DEMO_MODE (MUST be false or omitted in production. Set to true ONLY for local demo/simulation)
+app.demo.mode=${APP_DEMO_MODE:false}

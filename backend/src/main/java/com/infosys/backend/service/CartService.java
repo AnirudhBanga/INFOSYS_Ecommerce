@@ -194,7 +194,7 @@ public class CartService {
     // CHECKOUT + SAVE ORDER
     // ─────────────────────────────────────────────────────────
     @Transactional
-    public Order checkout(String email, String shippingAddress, String paymentMethod) {
+    public Order checkout(String email, String shippingAddress, String paymentMethod, String razorpayOrderId, String razorpayPaymentId, String paymentStatus) {
 
         // FIND USER
         User user = userRepository.findByEmail(email)
@@ -246,6 +246,9 @@ public class CartService {
         order.setTotalPrice(total);
         order.setShippingAddress(shippingAddress);
         order.setPaymentMethod(paymentMethod);
+        order.setRazorpayOrderId(razorpayOrderId);
+        order.setRazorpayPaymentId(razorpayPaymentId);
+        order.setPaymentStatus(paymentStatus);
 
         // SAVE ORDER
         Order savedOrder =

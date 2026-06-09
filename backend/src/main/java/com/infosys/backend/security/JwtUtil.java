@@ -3,6 +3,9 @@ package com.infosys.backend.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.PostConstruct;
+
 import java.security.Key;
 import java.util.Date;
 
@@ -11,11 +14,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
 
-    private final String SECRET =
-      "mysecretkeymysecretkeymysecretkey12345";
+    @Value("${jwt.secret:mysecretkeymysecretkeymysecretkey12345}")
+    private String secret;
 
-    private final Key key =
-       Keys.hmacShaKeyFor(SECRET.getBytes());
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String generateToken(String email){
 

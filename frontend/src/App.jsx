@@ -27,7 +27,9 @@ import Profile from "./pages/Profile";
 
 import "./index.css";
 
-const API = "http://localhost:8081/api";
+import { API_BASE_URL } from "./config";
+
+const API = API_BASE_URL;
 
 // ─────────────────────────────────────────
 // NAVBAR
@@ -338,13 +340,13 @@ function AppInner() {
   // ─────────────────────────────────────
   // CHECKOUT
   // ─────────────────────────────────────
-  const checkout = async (shippingAddress, paymentMethod) => {
+  const checkout = async (shippingAddress, paymentMethod, razorpayOrderId, razorpayPaymentId, razorpaySignature) => {
 
     try {
 
       const res = await axios.post(
         `${API}/orders/checkout`,
-        { shippingAddress, paymentMethod },
+        { shippingAddress, paymentMethod, razorpayOrderId, razorpayPaymentId, razorpaySignature },
         {
           headers: {
             Authorization:

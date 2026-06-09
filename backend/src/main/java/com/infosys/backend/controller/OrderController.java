@@ -7,13 +7,16 @@ import com.infosys.backend.repository.UserRepository;
 import com.infosys.backend.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import com.razorpay.Utils;
+import org.json.JSONObject;
 
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${cors.allowed-origins:http://localhost:5173}")
 public class OrderController {
 
     @Autowired
@@ -25,6 +28,12 @@ public class OrderController {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("${razorpay.key.secret}")
+    private String keySecret;
+
+    @Value("${app.demo.mode:false}")
+    private boolean isDemoMode;
+
     // CHECKOUT API
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(
@@ -34,8 +43,35 @@ public class OrderController {
         try {
             String address = request.getOrDefault("shippingAddress", "");
             String paymentMethod = request.getOrDefault("paymentMethod", "Credit Card");
+            String razorpayOrderId = request.getOrDefault("razorpayOrderId", null);
+            String razorpayPaymentId = request.getOrDefault("razorpayPaymentId", null);
+            String razorpaySignature = request.getOrDefault("razorpaySignature", null);
+            
+            String paymentStatus = "PENDING";
 
-            Order order = cartService.checkout(principal.getName(), address, paymentMethod);
+            // Verify signature if payment is online
+            if (!"Cash on Delivery".equals(paymentMethod) && razorpayOrderId != null && razorpayPaymentId != null) {
+                if (isDemoMode) {
+                    // DEMO MODE BYPASS - Allowed only when explicit app.demo.mode=true is set
+                    paymentStatus = "SUCCESS";
+                } else {
+                    JSONObject options = new JSONObject();
+                    options.put("razorpay_order_id", razorpayOrderId);
+                    options.put("razorpay_payment_id", razorpayPaymentId);
+                    options.put("razorpay_signature", razorpaySignature);
+                    
+                    boolean status = Utils.verifyPaymentSignature(options, keySecret);
+                    if (status) {
+                        paymentStatus = "SUCCESS";
+                    } else {
+                        return ResponseEntity.badRequest().body("Payment signature verification failed");
+                    }
+                }
+            } else if ("Cash on Delivery".equals(paymentMethod)) {
+                paymentStatus = "SUCCESS"; // COD is treated as success for order placement
+            }
+
+            Order order = cartService.checkout(principal.getName(), address, paymentMethod, razorpayOrderId, razorpayPaymentId, paymentStatus);
 
             return ResponseEntity.ok(order);
 

@@ -13,7 +13,7 @@ import com.infosys.backend.model.User;
 import com.infosys.backend.security.JwtUtil;
 import com.infosys.backend.service.UserService;
 
-@CrossOrigin(origins="http://localhost:5173")
+@CrossOrigin(origins = "${cors.allowed-origins:http://localhost:5173}")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

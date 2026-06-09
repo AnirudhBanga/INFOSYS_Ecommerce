@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "../style/products.css";
 
 /* Diverse shoe images — each index gets a different photo */
@@ -17,11 +18,12 @@ const SHOE_IMGS = [
   "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&q=80",
 ];
 
+const FALLBACK_IMG = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80";
+
 // Backend stores imageUrl; fallback to unique per-product image
 const getImage = (product) => {
   if (product.imageUrl && product.imageUrl.startsWith("http")) return product.imageUrl;
-  // If backend serves image: return `http://localhost:8081/api/products/${product.id}/image`;
-  return SHOE_IMGS[product.id % SHOE_IMGS.length];
+  return SHOE_IMGS[(product.id || 0) % SHOE_IMGS.length];
 };
 
 const CATEGORIES = ["All", "Sneakers", "Formal", "Sports", "Sandals", "Casual"];
@@ -63,7 +65,7 @@ function Products({ addToCart, toggleWishlist, isWishlisted }) {
     (async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:8081/api/products", {
+        const res = await fetch(`${API_BASE_URL}/products`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error();
@@ -178,7 +180,13 @@ function Products({ addToCart, toggleWishlist, isWishlisted }) {
               onClick={() => navigate(`/products/${product.id}`)}
             >
               <div className="pcard-img-wrap">
-                <img className="pcard-img" src={getImage(product)} alt={product.name} loading="lazy" />
+                <img 
+                  className="pcard-img" 
+                  src={getImage(product)} 
+                  alt={product.name} 
+                  loading="lazy" 
+                  onError={(e) => { e.target.src = FALLBACK_IMG; }}
+                />
                 {product.stock === 0 && <div className="out-of-stock-badge">Out of Stock</div>}
 
                 {/* ❤️ Wishlist button — top right corner */}

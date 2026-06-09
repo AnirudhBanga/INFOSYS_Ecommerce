@@ -252,3 +252,598 @@
     gap: 0;
   }
 }
+
+/* PAYMENT SIMULATOR MODAL */
+.payment-sim-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.payment-sim-container {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: simSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+@keyframes simSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.payment-sim-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-sim-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.payment-sim-header .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.payment-sim-header .close-btn:hover {
+  color: #333;
+}
+
+.payment-sim-body {
+  padding: 24px;
+}
+
+/* CARD DETAILS STREAM */
+.sim-card-form h4, 
+.sim-otp-form h4, 
+.sim-upi-options h4, 
+.sim-upi-app-select h4, 
+.sim-upi-qr h4, 
+.sim-upi-pin h4 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111;
+  text-align: center;
+}
+
+.card-mockup {
+  background: linear-gradient(135deg, #1c1917 0%, #44403c 100%);
+  border-radius: 14px;
+  padding: 22px;
+  color: #ffffff;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-mockup::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+}
+
+.card-mockup-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.card-mockup-number {
+  font-size: 1.3rem;
+  letter-spacing: 2.5px;
+  font-family: 'Courier New', Courier, monospace;
+  margin: 15px 0;
+}
+
+.card-mockup-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-mockup-name {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* OTP FORM */
+.sim-otp-form {
+  text-align: center;
+}
+
+.otp-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.sim-otp-form p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.test-info {
+  background: #fdf2e9;
+  border: 1px dashed #f5b041;
+  color: #d35400;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+/* UPI OPTIONS */
+.upi-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.upi-choice-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+
+.upi-choice-card:hover {
+  border-color: #cda45e;
+  background: #fffdf9;
+  transform: translateY(-2px);
+}
+
+.upi-choice-card .icon {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.upi-choice-card h5 {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.upi-choice-card p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #718096;
+  line-height: 1.4;
+}
+
+/* UPI APP SELECT */
+.upi-apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.upi-app-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.upi-app-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.upi-app-btn .app-icon {
+  font-size: 1.25rem;
+}
+
+/* UPI QR CODE */
+.sim-upi-qr {
+  text-align: center;
+}
+
+.qr-box {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: #ffffff;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.qr-brand-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #c6a87c;
+  color: #fff;
+  font-weight: 700;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.qr-meta {
+  margin-bottom: 20px;
+}
+
+.qr-amount {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 5px 0;
+}
+
+.qr-timer {
+  font-size: 0.9rem;
+  color: #e53e3e;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* UPI PIN SCREEN */
+.sim-upi-pin {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.upi-app-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.upi-logo {
+  color: #c6a87c;
+  letter-spacing: 0.5px;
+}
+
+.upi-payee-info {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.payee-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payee-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+}
+
+.payee-amount {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.pin-entry-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pin-prompt {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.pin-dots {
+  display: inline-flex;
+  gap: 12px;
+}
+
+.pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: transparent;
+  transition: all 0.1s;
+}
+
+.pin-dot.filled {
+  background: #0f172a;
+  border-color: #0f172a;
+  transform: scale(1.1);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.keypad-btn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: active 0.1s;
+  outline: none;
+}
+
+.keypad-btn:active {
+  background: #e2e8f0;
+}
+
+.keypad-btn.clear {
+  color: #ef4444;
+}
+
+.keypad-btn.submit {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.keypad-btn.submit:active {
+  background: #059669;
+}
+
+/* PROCESSING & SUCCESS */
+.sim-processing, 
+.sim-success {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.sim-processing p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.sim-success p {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* SUCCESS CHECKMARK ANIMATION */
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px auto;
+}
+
+.success-checkmark .check-icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  border-radius: 50%;
+  box-sizing: content-box;
+  border: 4px solid #4CAF50;
+}
+
+.success-checkmark .check-icon::before {
+  top: 3px;
+  left: -2px;
+  width: 30px;
+  transform-origin: 100% 50%;
+  border-radius: 100px 0 0 100px;
+}
+
+.success-checkmark .check-icon::after {
+  top: 0;
+  left: 30px;
+  width: 60px;
+  transform-origin: 0 50%;
+  border-radius: 0 100px 100px 0;
+}
+
+.success-checkmark .check-icon .icon-line {
+  height: 5px;
+  background-color: #4CAF50;
+  display: block;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+}
+
+.success-checkmark .check-icon .icon-line.line-tip {
+  top: 46px;
+  left: 19px;
+  width: 25px;
+  transform: rotate(45deg);
+  animation: icon-line-tip 0.75s;
+}
+
+.success-checkmark .check-icon .icon-line.line-long {
+  top: 38px;
+  right: 14px;
+  width: 47px;
+  transform: rotate(-45deg);
+  animation: icon-line-long 0.75s;
+}
+
+.success-checkmark .check-icon .icon-circle {
+  top: -4px;
+  left: -4px;
+  z-index: 10;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid rgba(76, 175, 80, 0.5);
+  box-sizing: content-box;
+  position: absolute;
+}
+
+.success-checkmark .check-icon .icon-fix {
+  top: 8px;
+  left: 28px;
+  width: 5px;
+  height: 70px;
+  z-index: 1;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+@keyframes icon-line-tip {
+  0% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  54% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  70% {
+    width: 50px;
+    left: -8px;
+    top: 37px;
+  }
+  84% {
+    width: 17px;
+    left: 21px;
+    top: 48px;
+  }
+  100% {
+    width: 25px;
+    left: 19px;
+    top: 46px;
+  }
+}
+
+@keyframes icon-line-long {
+  0% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  65% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  84% {
+    width: 55px;
+    right: 0px;
+    top: 35px;
+  }
+  100% {
+    width: 47px;
+    right: 14px;
+    top: 38px;
+  }
+}
+
+.w-100 {
+  width: 100%;
+}
+.mt-2 {
+  margin-top: 10px;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}

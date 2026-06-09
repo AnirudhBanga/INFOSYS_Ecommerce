@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 function Profile({ showMsg }) {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Profile({ showMsg }) {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:8081/api/users/profile", {
+      const res = await axios.get(`${API_BASE_URL}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfile({
@@ -58,7 +59,7 @@ function Profile({ showMsg }) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put("http://localhost:8081/api/users/profile", profile, {
+      await axios.put(`${API_BASE_URL}/users/profile`, profile, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showMsg("success", "Profile updated successfully!");
@@ -75,7 +76,7 @@ function Profile({ showMsg }) {
     }
     try {
       const token = localStorage.getItem("token");
-      await axios.put("http://localhost:8081/api/users/password", passwords, {
+      await axios.put(`${API_BASE_URL}/users/password`, passwords, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showMsg("success", "Password updated successfully!");
@@ -103,7 +104,7 @@ function Profile({ showMsg }) {
     }
     try {
       const token = localStorage.getItem("token");
-      await axios.put("http://localhost:8081/api/users/reset-password", { newPassword: resetPasswordState }, {
+      await axios.put(`${API_BASE_URL}/users/reset-password`, { newPassword: resetPasswordState }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showMsg("success", "Password reset successfully!");

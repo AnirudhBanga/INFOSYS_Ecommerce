@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 import "../style/productdetail.css";
 
 const SHOE_IMGS = [
@@ -53,7 +54,7 @@ function ProductDetail({
           localStorage.getItem("token");
 
         const res = await fetch(
-          `http://localhost:8081/api/products/${id}`,
+          `${API_BASE_URL}/products/${id}`,
           {
             headers: {
               Authorization:
@@ -89,7 +90,7 @@ function ProductDetail({
     }
 
     return SHOE_IMGS[
-      p.id % SHOE_IMGS.length
+      (p.id || 0) % SHOE_IMGS.length
     ];
   };
 
@@ -142,6 +143,7 @@ function ProductDetail({
               src={getImage(product)}
               alt={product.name}
               className="detail-main-img"
+              onError={(e) => { e.target.src = SHOE_IMGS[0]; }}
             />
 
           </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ function RegisterPage() {
     if (ageError) { showMsg("error", "Age must be a number"); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8081/api/auth/register", {
+      const res = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

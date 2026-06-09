@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 function LoginPage({ setIsLoggedIn }) {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function LoginPage({ setIsLoggedIn }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8081/api/auth/login", {
+      const res = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
